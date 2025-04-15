@@ -1,0 +1,344 @@
+<html>
+<head>
+<title>TaxDataVisualizationApp.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+.s5 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+TaxDataVisualizationApp.java</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">awt</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">awt</span><span class="s2">.</span><span class="s1">event</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">javax</span><span class="s2">.</span><span class="s1">swing</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">javax</span><span class="s2">.</span><span class="s1">swing</span><span class="s2">.</span><span class="s1">table</span><span class="s2">.</span><span class="s1">DefaultTableModel</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">jfree</span><span class="s2">.</span><span class="s1">chart</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">jfree</span><span class="s2">.</span><span class="s1">chart</span><span class="s2">.</span><span class="s1">plot</span><span class="s2">.</span><span class="s1">PlotOrientation</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">jfree</span><span class="s2">.</span><span class="s1">chart</span><span class="s2">.</span><span class="s1">plot</span><span class="s2">.</span><span class="s1">PiePlot</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">jfree</span><span class="s2">.</span><span class="s1">chart</span><span class="s2">.</span><span class="s1">ChartFactory</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">jfree</span><span class="s2">.</span><span class="s1">chart</span><span class="s2">.</span><span class="s1">ChartPanel</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">jfree</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">category</span><span class="s2">.</span><span class="s1">DefaultCategoryDataset</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">jfree</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">general</span><span class="s2">.</span><span class="s1">DefaultPieDataset</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">jfree</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">xy</span><span class="s2">.</span><span class="s1">XYSeries</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">jfree</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">xy</span><span class="s2">.</span><span class="s1">XYSeriesCollection</span><span class="s2">;</span>
+
+<span class="s0">class </span><span class="s1">TaxDataVisualizationApp </span><span class="s0">extends </span><span class="s1">JFrame </span><span class="s2">{</span>
+    <span class="s0">private </span><span class="s1">JTextField filePathField</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">JTextArea descriptionBox</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">JTable dataTable</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">DefaultTableModel tableModel</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">[]&gt; </span><span class="s1">dataset</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">String</span><span class="s2">[] </span><span class="s1">headers</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">JComboBox</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt; </span><span class="s1">filterChoice</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">JComboBox</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt; </span><span class="s1">chartChoice</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">JPanel chartDisplayPanel</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">TaxDataVisualizationApp</span><span class="s2">() {</span>
+        <span class="s1">setTitle</span><span class="s2">(</span><span class="s3">&quot;Tax Data Visualization App&quot;</span><span class="s2">);</span>
+        <span class="s1">setLayout</span><span class="s2">(</span><span class="s0">new </span><span class="s1">BorderLayout</span><span class="s2">());</span>
+        <span class="s1">setSize</span><span class="s2">(</span><span class="s4">1200</span><span class="s2">, </span><span class="s4">800</span><span class="s2">);</span>
+        <span class="s1">setDefaultCloseOperation</span><span class="s2">(</span><span class="s1">JFrame</span><span class="s2">.</span><span class="s1">EXIT_ON_CLOSE</span><span class="s2">);</span>
+
+        <span class="s5">// Create panels for different sections</span>
+        <span class="s1">JPanel topPanel </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JPanel</span><span class="s2">(</span><span class="s0">new </span><span class="s1">FlowLayout</span><span class="s2">());</span>
+        <span class="s1">JPanel leftPanel </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JPanel</span><span class="s2">();</span>
+        <span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">setLayout</span><span class="s2">(</span><span class="s0">new </span><span class="s1">BoxLayout</span><span class="s2">(</span><span class="s1">leftPanel</span><span class="s2">, </span><span class="s1">BoxLayout</span><span class="s2">.</span><span class="s1">Y_AXIS</span><span class="s2">));</span>
+        <span class="s1">chartDisplayPanel </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JPanel</span><span class="s2">(</span><span class="s0">new </span><span class="s1">BorderLayout</span><span class="s2">());</span>
+
+        <span class="s5">// File path field and button</span>
+        <span class="s1">JLabel filePathLabel </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JLabel</span><span class="s2">(</span><span class="s3">&quot;Dataset File Path:&quot;</span><span class="s2">);</span>
+        <span class="s1">filePathField </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JTextField</span><span class="s2">(</span><span class="s4">30</span><span class="s2">);</span>
+        <span class="s1">JButton uploadButton </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JButton</span><span class="s2">(</span><span class="s3">&quot;Upload&quot;</span><span class="s2">);</span>
+
+        <span class="s1">topPanel</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">filePathLabel</span><span class="s2">);</span>
+        <span class="s1">topPanel</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">filePathField</span><span class="s2">);</span>
+        <span class="s1">topPanel</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">uploadButton</span><span class="s2">);</span>
+
+        <span class="s5">// Description box</span>
+        <span class="s1">descriptionBox </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JTextArea</span><span class="s2">(</span><span class="s4">10</span><span class="s2">, </span><span class="s4">100</span><span class="s2">);</span>
+        <span class="s1">descriptionBox</span><span class="s2">.</span><span class="s1">setEditable</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+        <span class="s1">JScrollPane descriptionScroll </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JScrollPane</span><span class="s2">(</span><span class="s1">descriptionBox</span><span class="s2">);</span>
+        <span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">descriptionScroll</span><span class="s2">);</span>
+
+        <span class="s5">// Data table</span>
+        <span class="s1">tableModel </span><span class="s2">= </span><span class="s0">new </span><span class="s1">DefaultTableModel</span><span class="s2">();</span>
+        <span class="s1">dataTable </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JTable</span><span class="s2">(</span><span class="s1">tableModel</span><span class="s2">);</span>
+        <span class="s1">JScrollPane tableScroll </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JScrollPane</span><span class="s2">(</span><span class="s1">dataTable</span><span class="s2">);</span>
+        <span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">tableScroll</span><span class="s2">);</span>
+
+        <span class="s5">// Filter and Chart Choice</span>
+        <span class="s1">JLabel filterLabel </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JLabel</span><span class="s2">(</span><span class="s3">&quot;Filter by:&quot;</span><span class="s2">);</span>
+        <span class="s1">filterChoice </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JComboBox</span><span class="s2">&lt;&gt;(</span><span class="s0">new </span><span class="s1">String</span><span class="s2">[] {</span>
+                <span class="s3">&quot;Tax on Vehicles (2019-20)&quot;</span><span class="s2">, </span><span class="s3">&quot;Tax on Goods (2019-20)&quot;</span><span class="s2">,</span>
+                <span class="s3">&quot;Total Tax (2019-20)&quot;</span><span class="s2">, </span><span class="s3">&quot;Tax on Vehicles (2020-21)&quot;</span><span class="s2">,</span>
+                <span class="s3">&quot;Tax on Goods (2020-21)&quot;</span><span class="s2">, </span><span class="s3">&quot;Total Tax (2020-21)&quot;</span>
+        <span class="s2">});</span>
+        <span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">filterLabel</span><span class="s2">);</span>
+        <span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">filterChoice</span><span class="s2">);</span>
+
+        <span class="s1">JLabel chartLabel </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JLabel</span><span class="s2">(</span><span class="s3">&quot;Chart Type:&quot;</span><span class="s2">);</span>
+        <span class="s1">chartChoice </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JComboBox</span><span class="s2">&lt;&gt;(</span><span class="s0">new </span><span class="s1">String</span><span class="s2">[]{</span><span class="s3">&quot;Bar Chart&quot;</span><span class="s2">, </span><span class="s3">&quot;Pie Chart&quot;</span><span class="s2">, </span><span class="s3">&quot;Line Chart&quot;</span><span class="s2">, </span><span class="s3">&quot;Scatter Plot&quot;</span><span class="s2">, </span><span class="s3">&quot;Histogram&quot;</span><span class="s2">});</span>
+        <span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">chartLabel</span><span class="s2">);</span>
+        <span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">chartChoice</span><span class="s2">);</span>
+
+        <span class="s5">// Visualization button</span>
+        <span class="s1">JButton visualizeButton </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JButton</span><span class="s2">(</span><span class="s3">&quot;Visualize&quot;</span><span class="s2">);</span>
+        <span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">visualizeButton</span><span class="s2">);</span>
+
+        <span class="s5">// Add components to main layout</span>
+        <span class="s1">add</span><span class="s2">(</span><span class="s1">topPanel</span><span class="s2">, </span><span class="s1">BorderLayout</span><span class="s2">.</span><span class="s1">NORTH</span><span class="s2">);</span>
+        <span class="s1">add</span><span class="s2">(</span><span class="s1">leftPanel</span><span class="s2">, </span><span class="s1">BorderLayout</span><span class="s2">.</span><span class="s1">WEST</span><span class="s2">);</span>
+        <span class="s1">add</span><span class="s2">(</span><span class="s1">chartDisplayPanel</span><span class="s2">, </span><span class="s1">BorderLayout</span><span class="s2">.</span><span class="s1">CENTER</span><span class="s2">);</span>
+
+        <span class="s5">// Upload button action</span>
+        <span class="s1">uploadButton</span><span class="s2">.</span><span class="s1">addActionListener</span><span class="s2">(</span><span class="s1">e -&gt; handleUpload</span><span class="s2">());</span>
+
+        <span class="s5">// Visualize button action</span>
+        <span class="s1">visualizeButton</span><span class="s2">.</span><span class="s1">addActionListener</span><span class="s2">(</span><span class="s1">e -&gt; visualizeData</span><span class="s2">());</span>
+
+        <span class="s1">setVisible</span><span class="s2">(</span><span class="s0">true</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">handleUpload</span><span class="s2">() {</span>
+        <span class="s1">JFileChooser fileChooser </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JFileChooser</span><span class="s2">();</span>
+        <span class="s0">int </span><span class="s1">returnValue </span><span class="s2">= </span><span class="s1">fileChooser</span><span class="s2">.</span><span class="s1">showOpenDialog</span><span class="s2">(</span><span class="s0">this</span><span class="s2">);</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">returnValue </span><span class="s2">== </span><span class="s1">JFileChooser</span><span class="s2">.</span><span class="s1">APPROVE_OPTION</span><span class="s2">) {</span>
+            <span class="s1">File selectedFile </span><span class="s2">= </span><span class="s1">fileChooser</span><span class="s2">.</span><span class="s1">getSelectedFile</span><span class="s2">();</span>
+            <span class="s1">filePathField</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s1">selectedFile</span><span class="s2">.</span><span class="s1">getAbsolutePath</span><span class="s2">());</span>
+            <span class="s1">dataset </span><span class="s2">= </span><span class="s1">loadDataset</span><span class="s2">(</span><span class="s1">selectedFile</span><span class="s2">);</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">dataset </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">headers </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s1">tableModel</span><span class="s2">.</span><span class="s1">setColumnIdentifiers</span><span class="s2">(</span><span class="s1">headers</span><span class="s2">);</span>
+                <span class="s1">tableModel</span><span class="s2">.</span><span class="s1">setRowCount</span><span class="s2">(</span><span class="s4">0</span><span class="s2">);</span>
+                <span class="s0">for </span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">row </span><span class="s2">: </span><span class="s1">dataset</span><span class="s2">) {</span>
+                    <span class="s1">tableModel</span><span class="s2">.</span><span class="s1">addRow</span><span class="s2">(</span><span class="s1">row</span><span class="s2">);</span>
+                <span class="s2">}</span>
+
+                <span class="s5">// Update descriptionBox with dataset details</span>
+                <span class="s1">StringBuilder description </span><span class="s2">= </span><span class="s0">new </span><span class="s1">StringBuilder</span><span class="s2">();</span>
+                <span class="s1">description</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;Dataset Overview:</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">);</span>
+                <span class="s1">description</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;State-wise tax collection data for fiscal years 2019-2020 and 2020-2021.</span><span class="s0">\n\n</span><span class="s3">&quot;</span><span class="s2">);</span>
+                <span class="s1">description</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;Headers: &quot;</span><span class="s2">).</span><span class="s1">append</span><span class="s2">(</span><span class="s1">Arrays</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">(</span><span class="s1">headers</span><span class="s2">)).</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">);</span>
+                <span class="s1">description</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;Rows: &quot;</span><span class="s2">).</span><span class="s1">append</span><span class="s2">(</span><span class="s1">dataset</span><span class="s2">.</span><span class="s1">size</span><span class="s2">()).</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\n\n</span><span class="s3">&quot;</span><span class="s2">);</span>
+
+                <span class="s0">for </span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">row </span><span class="s2">: </span><span class="s1">dataset</span><span class="s2">) {</span>
+                    <span class="s1">description</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s1">Arrays</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">(</span><span class="s1">row</span><span class="s2">)).</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">);</span>
+                <span class="s2">}</span>
+
+                <span class="s1">descriptionBox</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s1">description</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">());</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">descriptionBox</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s3">&quot;Failed to load dataset.&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">[]&gt; </span><span class="s1">loadDataset</span><span class="s2">(</span><span class="s1">File file</span><span class="s2">) {</span>
+        <span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">[]&gt; </span><span class="s1">data </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ArrayList</span><span class="s2">&lt;&gt;();</span>
+        <span class="s0">try </span><span class="s2">(</span><span class="s1">BufferedReader br </span><span class="s2">= </span><span class="s0">new </span><span class="s1">BufferedReader</span><span class="s2">(</span><span class="s0">new </span><span class="s1">FileReader</span><span class="s2">(</span><span class="s1">file</span><span class="s2">))) {</span>
+            <span class="s1">String line</span><span class="s2">;</span>
+            <span class="s0">boolean </span><span class="s1">isHeader </span><span class="s2">= </span><span class="s0">true</span><span class="s2">;</span>
+            <span class="s0">while </span><span class="s2">((</span><span class="s1">line </span><span class="s2">= </span><span class="s1">br</span><span class="s2">.</span><span class="s1">readLine</span><span class="s2">()) != </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">isHeader</span><span class="s2">) {</span>
+                    <span class="s1">headers </span><span class="s2">= </span><span class="s1">line</span><span class="s2">.</span><span class="s1">split</span><span class="s2">(</span><span class="s3">&quot;,&quot;</span><span class="s2">);</span>
+                    <span class="s1">isHeader </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s1">data</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">line</span><span class="s2">.</span><span class="s1">split</span><span class="s2">(</span><span class="s3">&quot;,&quot;</span><span class="s2">));</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">Exception e</span><span class="s2">) {</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">();</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">data</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">visualizeData</span><span class="s2">() {</span>
+        <span class="s1">String selectedFilter </span><span class="s2">= (</span><span class="s1">String</span><span class="s2">) </span><span class="s1">filterChoice</span><span class="s2">.</span><span class="s1">getSelectedItem</span><span class="s2">();</span>
+        <span class="s1">String selectedChart </span><span class="s2">= (</span><span class="s1">String</span><span class="s2">) </span><span class="s1">chartChoice</span><span class="s2">.</span><span class="s1">getSelectedItem</span><span class="s2">();</span>
+
+        <span class="s0">switch </span><span class="s2">(</span><span class="s1">selectedChart</span><span class="s2">) {</span>
+            <span class="s0">case </span><span class="s3">&quot;Bar Chart&quot;</span><span class="s2">:</span>
+                <span class="s1">createBarChart</span><span class="s2">(</span><span class="s1">selectedFilter</span><span class="s2">);</span>
+                <span class="s0">break</span><span class="s2">;</span>
+            <span class="s0">case </span><span class="s3">&quot;Pie Chart&quot;</span><span class="s2">:</span>
+                <span class="s1">createPieChart</span><span class="s2">(</span><span class="s1">selectedFilter</span><span class="s2">);</span>
+                <span class="s0">break</span><span class="s2">;</span>
+            <span class="s0">case </span><span class="s3">&quot;Line Chart&quot;</span><span class="s2">:</span>
+                <span class="s1">createLineChart</span><span class="s2">(</span><span class="s1">selectedFilter</span><span class="s2">);</span>
+                <span class="s0">break</span><span class="s2">;</span>
+            <span class="s0">case </span><span class="s3">&quot;Scatter Plot&quot;</span><span class="s2">:</span>
+                <span class="s1">createScatterPlot</span><span class="s2">(</span><span class="s1">selectedFilter</span><span class="s2">);</span>
+                <span class="s0">break</span><span class="s2">;</span>
+            <span class="s0">case </span><span class="s3">&quot;Histogram&quot;</span><span class="s2">:</span>
+                <span class="s1">createHistogram</span><span class="s2">(</span><span class="s1">selectedFilter</span><span class="s2">);</span>
+                <span class="s0">break</span><span class="s2">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">createBarChart</span><span class="s2">(</span><span class="s1">String filter</span><span class="s2">) {</span>
+        <span class="s1">DefaultCategoryDataset barDataset </span><span class="s2">= </span><span class="s0">new </span><span class="s1">DefaultCategoryDataset</span><span class="s2">();</span>
+
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">record </span><span class="s2">: </span><span class="s1">dataset</span><span class="s2">) {</span>
+            <span class="s1">String state </span><span class="s2">= </span><span class="s1">record</span><span class="s2">[</span><span class="s4">0</span><span class="s2">];</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s0">double </span><span class="s1">value </span><span class="s2">= </span><span class="s1">getValueByFilter</span><span class="s2">(</span><span class="s1">record</span><span class="s2">, </span><span class="s1">filter</span><span class="s2">);</span>
+                <span class="s1">barDataset</span><span class="s2">.</span><span class="s1">addValue</span><span class="s2">(</span><span class="s1">value</span><span class="s2">, </span><span class="s1">filter</span><span class="s2">, </span><span class="s1">state</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">NumberFormatException e</span><span class="s2">) {</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Skipping non-numeric value for state: &quot; </span><span class="s2">+ </span><span class="s1">state</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">JFreeChart barChart </span><span class="s2">= </span><span class="s1">ChartFactory</span><span class="s2">.</span><span class="s1">createBarChart</span><span class="s2">(</span>
+                <span class="s1">filter </span><span class="s2">+ </span><span class="s3">&quot; by State/UT&quot;</span><span class="s2">, </span><span class="s3">&quot;State/UT&quot;</span><span class="s2">, </span><span class="s3">&quot;Value&quot;</span><span class="s2">, </span><span class="s1">barDataset</span><span class="s2">,</span>
+                <span class="s1">PlotOrientation</span><span class="s2">.</span><span class="s1">VERTICAL</span><span class="s2">, </span><span class="s0">true</span><span class="s2">, </span><span class="s0">true</span><span class="s2">, </span><span class="s0">false</span><span class="s2">);</span>
+
+        <span class="s1">openFullScreenChartWindow</span><span class="s2">(</span><span class="s1">barChart</span><span class="s2">, </span><span class="s1">filter</span><span class="s2">, </span><span class="s3">&quot;Bar Chart&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">createPieChart</span><span class="s2">(</span><span class="s1">String filter</span><span class="s2">) {</span>
+        <span class="s1">DefaultPieDataset pieDataset </span><span class="s2">= </span><span class="s0">new </span><span class="s1">DefaultPieDataset</span><span class="s2">();</span>
+
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">record </span><span class="s2">: </span><span class="s1">dataset</span><span class="s2">) {</span>
+            <span class="s1">String state </span><span class="s2">= </span><span class="s1">record</span><span class="s2">[</span><span class="s4">0</span><span class="s2">];</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s0">double </span><span class="s1">value </span><span class="s2">= </span><span class="s1">getValueByFilter</span><span class="s2">(</span><span class="s1">record</span><span class="s2">, </span><span class="s1">filter</span><span class="s2">);</span>
+                <span class="s1">pieDataset</span><span class="s2">.</span><span class="s1">setValue</span><span class="s2">(</span><span class="s1">state</span><span class="s2">, </span><span class="s1">value</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">NumberFormatException e</span><span class="s2">) {</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Skipping non-numeric value for state: &quot; </span><span class="s2">+ </span><span class="s1">state</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">JFreeChart pieChart </span><span class="s2">= </span><span class="s1">ChartFactory</span><span class="s2">.</span><span class="s1">createPieChart</span><span class="s2">(</span><span class="s1">filter </span><span class="s2">+ </span><span class="s3">&quot; Distribution&quot;</span><span class="s2">, </span><span class="s1">pieDataset</span><span class="s2">, </span><span class="s0">true</span><span class="s2">, </span><span class="s0">true</span><span class="s2">, </span><span class="s0">false</span><span class="s2">);</span>
+        <span class="s1">PiePlot plot </span><span class="s2">= (</span><span class="s1">PiePlot</span><span class="s2">) </span><span class="s1">pieChart</span><span class="s2">.</span><span class="s1">getPlot</span><span class="s2">();</span>
+        <span class="s1">plot</span><span class="s2">.</span><span class="s1">setSimpleLabels</span><span class="s2">(</span><span class="s0">true</span><span class="s2">);</span>
+
+        <span class="s1">openFullScreenChartWindow</span><span class="s2">(</span><span class="s1">pieChart</span><span class="s2">, </span><span class="s1">filter</span><span class="s2">, </span><span class="s3">&quot;Pie Chart&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">createLineChart</span><span class="s2">(</span><span class="s1">String filter</span><span class="s2">) {</span>
+        <span class="s1">XYSeriesCollection lineDataset </span><span class="s2">= </span><span class="s0">new </span><span class="s1">XYSeriesCollection</span><span class="s2">();</span>
+        <span class="s1">XYSeries series </span><span class="s2">= </span><span class="s0">new </span><span class="s1">XYSeries</span><span class="s2">(</span><span class="s1">filter</span><span class="s2">);</span>
+
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">record </span><span class="s2">: </span><span class="s1">dataset</span><span class="s2">) {</span>
+            <span class="s1">String state </span><span class="s2">= </span><span class="s1">record</span><span class="s2">[</span><span class="s4">0</span><span class="s2">];</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s0">double </span><span class="s1">value </span><span class="s2">= </span><span class="s1">getValueByFilter</span><span class="s2">(</span><span class="s1">record</span><span class="s2">, </span><span class="s1">filter</span><span class="s2">);</span>
+                <span class="s1">series</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">series</span><span class="s2">.</span><span class="s1">getItemCount</span><span class="s2">() + </span><span class="s4">1</span><span class="s2">, </span><span class="s1">value</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">NumberFormatException e</span><span class="s2">) {</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Skipping non-numeric value for state: &quot; </span><span class="s2">+ </span><span class="s1">state</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">lineDataset</span><span class="s2">.</span><span class="s1">addSeries</span><span class="s2">(</span><span class="s1">series</span><span class="s2">);</span>
+        <span class="s1">JFreeChart lineChart </span><span class="s2">= </span><span class="s1">ChartFactory</span><span class="s2">.</span><span class="s1">createXYLineChart</span><span class="s2">(</span><span class="s1">filter </span><span class="s2">+ </span><span class="s3">&quot; Trend&quot;</span><span class="s2">, </span><span class="s3">&quot;State Index&quot;</span><span class="s2">, </span><span class="s3">&quot;Value&quot;</span><span class="s2">, </span><span class="s1">lineDataset</span><span class="s2">);</span>
+
+        <span class="s1">openFullScreenChartWindow</span><span class="s2">(</span><span class="s1">lineChart</span><span class="s2">, </span><span class="s1">filter</span><span class="s2">, </span><span class="s3">&quot;Line Chart&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">createScatterPlot</span><span class="s2">(</span><span class="s1">String filter</span><span class="s2">) {</span>
+        <span class="s1">XYSeriesCollection scatterDataset </span><span class="s2">= </span><span class="s0">new </span><span class="s1">XYSeriesCollection</span><span class="s2">();</span>
+        <span class="s1">XYSeries series </span><span class="s2">= </span><span class="s0">new </span><span class="s1">XYSeries</span><span class="s2">(</span><span class="s1">filter</span><span class="s2">);</span>
+
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">record </span><span class="s2">: </span><span class="s1">dataset</span><span class="s2">) {</span>
+            <span class="s1">String state </span><span class="s2">= </span><span class="s1">record</span><span class="s2">[</span><span class="s4">0</span><span class="s2">];</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s0">double </span><span class="s1">value </span><span class="s2">= </span><span class="s1">getValueByFilter</span><span class="s2">(</span><span class="s1">record</span><span class="s2">, </span><span class="s1">filter</span><span class="s2">);</span>
+                <span class="s1">series</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">series</span><span class="s2">.</span><span class="s1">getItemCount</span><span class="s2">() + </span><span class="s4">1</span><span class="s2">, </span><span class="s1">value</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">NumberFormatException e</span><span class="s2">) {</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Skipping non-numeric value for state: &quot; </span><span class="s2">+ </span><span class="s1">state</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">scatterDataset</span><span class="s2">.</span><span class="s1">addSeries</span><span class="s2">(</span><span class="s1">series</span><span class="s2">);</span>
+        <span class="s1">JFreeChart scatterChart </span><span class="s2">= </span><span class="s1">ChartFactory</span><span class="s2">.</span><span class="s1">createScatterPlot</span><span class="s2">(</span><span class="s1">filter </span><span class="s2">+ </span><span class="s3">&quot; Scatter Plot&quot;</span><span class="s2">, </span><span class="s3">&quot;State Index&quot;</span><span class="s2">, </span><span class="s3">&quot;Value&quot;</span><span class="s2">, </span><span class="s1">scatterDataset</span><span class="s2">);</span>
+
+        <span class="s1">openFullScreenChartWindow</span><span class="s2">(</span><span class="s1">scatterChart</span><span class="s2">, </span><span class="s1">filter</span><span class="s2">, </span><span class="s3">&quot;Scatter Plot&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">createHistogram</span><span class="s2">(</span><span class="s1">String filter</span><span class="s2">) {</span>
+        <span class="s1">DefaultCategoryDataset histogramDataset </span><span class="s2">= </span><span class="s0">new </span><span class="s1">DefaultCategoryDataset</span><span class="s2">();</span>
+
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">record </span><span class="s2">: </span><span class="s1">dataset</span><span class="s2">) {</span>
+            <span class="s1">String state </span><span class="s2">= </span><span class="s1">record</span><span class="s2">[</span><span class="s4">0</span><span class="s2">];</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s0">double </span><span class="s1">value </span><span class="s2">= </span><span class="s1">getValueByFilter</span><span class="s2">(</span><span class="s1">record</span><span class="s2">, </span><span class="s1">filter</span><span class="s2">);</span>
+                <span class="s1">histogramDataset</span><span class="s2">.</span><span class="s1">addValue</span><span class="s2">(</span><span class="s1">value</span><span class="s2">, </span><span class="s3">&quot;Value&quot;</span><span class="s2">, </span><span class="s1">state</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">NumberFormatException e</span><span class="s2">) {</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Skipping non-numeric value for state: &quot; </span><span class="s2">+ </span><span class="s1">state</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">JFreeChart histogramChart </span><span class="s2">= </span><span class="s1">ChartFactory</span><span class="s2">.</span><span class="s1">createBarChart</span><span class="s2">(</span>
+                <span class="s1">filter </span><span class="s2">+ </span><span class="s3">&quot; Histogram&quot;</span><span class="s2">, </span><span class="s3">&quot;State/UT&quot;</span><span class="s2">, </span><span class="s3">&quot;Value&quot;</span><span class="s2">, </span><span class="s1">histogramDataset</span><span class="s2">,</span>
+                <span class="s1">PlotOrientation</span><span class="s2">.</span><span class="s1">VERTICAL</span><span class="s2">, </span><span class="s0">true</span><span class="s2">, </span><span class="s0">true</span><span class="s2">, </span><span class="s0">false</span><span class="s2">);</span>
+
+        <span class="s1">openFullScreenChartWindow</span><span class="s2">(</span><span class="s1">histogramChart</span><span class="s2">, </span><span class="s1">filter</span><span class="s2">, </span><span class="s3">&quot;Histogram&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private double </span><span class="s1">getValueByFilter</span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">record</span><span class="s2">, </span><span class="s1">String filter</span><span class="s2">) {</span>
+        <span class="s5">// Match the filter with the respective index in the dataset</span>
+        <span class="s0">switch </span><span class="s2">(</span><span class="s1">filter</span><span class="s2">) {</span>
+            <span class="s0">case </span><span class="s3">&quot;Tax on Vehicles (2019-20)&quot;</span><span class="s2">:</span>
+                <span class="s0">return </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">record</span><span class="s2">[</span><span class="s4">1</span><span class="s2">]);</span>
+            <span class="s0">case </span><span class="s3">&quot;Tax on Goods (2019-20)&quot;</span><span class="s2">:</span>
+                <span class="s0">return </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">record</span><span class="s2">[</span><span class="s4">2</span><span class="s2">]);</span>
+            <span class="s0">case </span><span class="s3">&quot;Total Tax (2019-20)&quot;</span><span class="s2">:</span>
+                <span class="s0">return </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">record</span><span class="s2">[</span><span class="s4">3</span><span class="s2">]);</span>
+            <span class="s0">case </span><span class="s3">&quot;Tax on Vehicles (2020-21)&quot;</span><span class="s2">:</span>
+                <span class="s0">return </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">record</span><span class="s2">[</span><span class="s4">4</span><span class="s2">]);</span>
+            <span class="s0">case </span><span class="s3">&quot;Tax on Goods (2020-21)&quot;</span><span class="s2">:</span>
+                <span class="s0">return </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">record</span><span class="s2">[</span><span class="s4">5</span><span class="s2">]);</span>
+            <span class="s0">case </span><span class="s3">&quot;Total Tax (2020-21)&quot;</span><span class="s2">:</span>
+                <span class="s0">return </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">record</span><span class="s2">[</span><span class="s4">6</span><span class="s2">]);</span>
+            <span class="s0">default</span><span class="s2">:</span>
+                <span class="s0">throw new </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s3">&quot;Invalid filter selection&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s5">// Modified method to include a story box</span>
+    <span class="s0">private void </span><span class="s1">openFullScreenChartWindow</span><span class="s2">(</span><span class="s1">JFreeChart chart</span><span class="s2">, </span><span class="s1">String filter</span><span class="s2">, </span><span class="s1">String chartType</span><span class="s2">) {</span>
+        <span class="s1">JFrame chartFrame </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JFrame</span><span class="s2">(</span><span class="s1">chartType </span><span class="s2">+ </span><span class="s3">&quot;: &quot; </span><span class="s2">+ </span><span class="s1">filter</span><span class="s2">);</span>
+        <span class="s1">chartFrame</span><span class="s2">.</span><span class="s1">setSize</span><span class="s2">(</span><span class="s4">9000</span><span class="s2">, </span><span class="s4">600</span><span class="s2">);</span>
+
+        <span class="s5">// Create the chart panel</span>
+        <span class="s1">ChartPanel chartPanel </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ChartPanel</span><span class="s2">(</span><span class="s1">chart</span><span class="s2">);</span>
+
+        <span class="s5">// Create a story panel for displaying information about the chart</span>
+        <span class="s1">JPanel storyPanel </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JPanel</span><span class="s2">(</span><span class="s0">new </span><span class="s1">BorderLayout</span><span class="s2">());</span>
+        <span class="s1">JTextArea storyArea </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JTextArea</span><span class="s2">(</span><span class="s4">10</span><span class="s2">, </span><span class="s4">20</span><span class="s2">);</span>
+        <span class="s1">storyArea</span><span class="s2">.</span><span class="s1">setEditable</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+
+        <span class="s5">// Provide a basic description based on chart type and filter</span>
+        <span class="s1">String storyText </span><span class="s2">= </span><span class="s3">&quot;Visualization of &quot; </span><span class="s2">+ </span><span class="s1">filter </span><span class="s2">+ </span><span class="s3">&quot; using a &quot; </span><span class="s2">+ </span><span class="s1">chartType </span><span class="s2">+ </span><span class="s3">&quot;.</span><span class="s0">\n\n</span><span class="s3">&quot;</span><span class="s2">;</span>
+        <span class="s1">storyText </span><span class="s2">+= </span><span class="s3">&quot;This chart helps in understanding the distribution of tax collected &quot;</span><span class="s2">;</span>
+        <span class="s1">storyText </span><span class="s2">+= </span><span class="s3">&quot;across various states for the fiscal years 2019-2020 and 2020-2021.&quot;</span><span class="s2">;</span>
+        <span class="s1">storyText </span><span class="s2">+= </span><span class="s3">&quot; The values represent tax collected on vehicles, goods, or the total tax for these years.&quot;</span><span class="s2">;</span>
+
+        <span class="s1">storyArea</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s1">storyText</span><span class="s2">);</span>
+        <span class="s1">JScrollPane storyScroll </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JScrollPane</span><span class="s2">(</span><span class="s1">storyArea</span><span class="s2">);</span>
+        <span class="s1">storyPanel</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">storyScroll</span><span class="s2">, </span><span class="s1">BorderLayout</span><span class="s2">.</span><span class="s1">CENTER</span><span class="s2">);</span>
+
+        <span class="s5">// Create a split pane to show both the chart and the story</span>
+        <span class="s1">JSplitPane splitPane </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JSplitPane</span><span class="s2">(</span><span class="s1">JSplitPane</span><span class="s2">.</span><span class="s1">HORIZONTAL_SPLIT</span><span class="s2">, </span><span class="s1">chartPanel</span><span class="s2">, </span><span class="s1">storyPanel</span><span class="s2">);</span>
+        <span class="s1">splitPane</span><span class="s2">.</span><span class="s1">setDividerLocation</span><span class="s2">(</span><span class="s4">700</span><span class="s2">); </span><span class="s5">// Adjust as per requirement</span>
+        <span class="s1">chartFrame</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">splitPane</span><span class="s2">);</span>
+
+        <span class="s1">chartFrame</span><span class="s2">.</span><span class="s1">setVisible</span><span class="s2">(</span><span class="s0">true</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public static void </span><span class="s1">main</span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">args</span><span class="s2">) {</span>
+        <span class="s1">SwingUtilities</span><span class="s2">.</span><span class="s1">invokeLater</span><span class="s2">(</span><span class="s1">TaxDataVisualizationApp::</span><span class="s0">new</span><span class="s2">);</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
